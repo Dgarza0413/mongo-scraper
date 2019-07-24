@@ -27,9 +27,7 @@
 }
 
 .card-select {
-    /* background-color: orange; */
     display: flex;
-    /* justify-content: center; */
     height: 50px;
     align-items: center;
     padding-left: 10%;

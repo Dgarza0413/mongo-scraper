@@ -2,7 +2,9 @@ var express = require("express");
 var mongojs = require("mongojs");
 var axios = require("axios");
 var cheerio = require("cheerio");
-var path = require("path")
+var path = require("path");
+var exphbs = require("express-handlebars")
+var mongoose = require("mongoose")
 
 var PORT = process.env.PORT || 3000
 
@@ -10,9 +12,16 @@ var app = express();
 var databaseUrl = "news";
 var collections = ["media"];
 
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongo_scraper";
+
+mongoose.connect(MONGODB_URI);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
 var db = mongojs(databaseUrl, collections);
 db.on("error", (error) => {
@@ -20,8 +29,12 @@ db.on("error", (error) => {
 });
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "./public/landing.html"));
-})
+    db.Article.find({}).then((dbArticle) => {
+        res.render("index", dbArticle)
+    }).catch((err) => {
+        res.json(err);
+    })
+});
 
 app.get("/all", (req, res) => {
     db.media.find({}, (error, found) => {
@@ -36,7 +49,6 @@ app.get("/all", (req, res) => {
 
 app.get("/scrap", (req, res) => {
     res.send("this the scraped page")
-    // axios.get("http://www.apnews.com").then((response) => {
     axios.get("http://www.apnews.com/apf-topnews").then((response) => {
         var $ = cheerio.load(response.data);
         var results = [];
