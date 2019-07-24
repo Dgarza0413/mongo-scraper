@@ -36,15 +36,18 @@ app.get("/all", (req, res) => {
 
 app.get("/scrap", (req, res) => {
     res.send("this the scraped page")
-    axios.get("http://www.apnews.com").then((response) => {
+    // axios.get("http://www.apnews.com").then((response) => {
+    axios.get("http://www.apnews.com/apf-topnews").then((response) => {
         var $ = cheerio.load(response.data);
         var results = [];
-        $("article").each(function (i, element) {
-            var title = $(element).children().text();
+        $(".FeedCard").each(function (i, element) {
+            var title = $(element).find("h1").text();
+            var description = $(element).find("p").text();
             var link = $(element).find("a").attr("href");
             if (title && link) {
-                db.media.insert({
+                results.push({
                     title,
+                    description,
                     link
                 }, function (err, inserted) {
                     if (err) {

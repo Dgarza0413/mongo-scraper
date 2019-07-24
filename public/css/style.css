@@ -18,7 +18,9 @@
     padding: 10%;
 }
 
-.card-desc {}
+.card-desc {
+    width: 0px;
+}
 
 .card-category {
     color: lightslategray;
