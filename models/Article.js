@@ -13,6 +13,9 @@ var ArticleSchema = new Schema({
     description: {
         type: String
     },
+    image: {
+        type: String
+    },
     //ref the Note.js file
     note: {
         type: Schema.Types.ObjectId,

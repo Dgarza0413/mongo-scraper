@@ -31,6 +31,7 @@ app.get("/scrap", (req, res) => {
             results.title = $(this).find("h1").text();
             results.description = $(this).find("p").text();
             results.link = $(this).find("a").attr("href");
+            // results.img = $(this).find("img").attr("src")
 
             console.log(results)
             //how we push our properties to the database
@@ -44,16 +45,14 @@ app.get("/scrap", (req, res) => {
     })
 })
 
-app.get("/articles", (req, res) => {
+app.get("/", (req, res) => {
     db.Article.find({}, function (err, docs) {
+        //we have to pass in the obj that 
         var obj = {
             articles: docs
         }
         res.render("index", obj);
     });
-    // .catch((err) => {
-    //     res.json(err);
-    // })
 });
 
 app.get("/all", (req, res) => {
