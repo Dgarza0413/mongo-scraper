@@ -31,7 +31,8 @@ app.get("/scrap", (req, res) => {
             results.title = $(this).find("h1").text();
             results.description = $(this).find("p").text();
             results.link = $(this).find("a").attr("href");
-            // results.img = $(this).find("img").attr("src")
+            results.author = $(this).find("span.byline").text();
+
 
             console.log(results)
             //how we push our properties to the database
@@ -48,20 +49,50 @@ app.get("/scrap", (req, res) => {
 app.get("/", (req, res) => {
     db.Article.find({}, function (err, docs) {
         //we have to pass in the obj that 
-        var obj = {
-            articles: docs
-        }
+        var obj = { articles: docs }
         res.render("index", obj);
-    });
-});
-
-app.get("/all", (req, res) => {
-    db.Article.find({}).then((dbArticle) => {
-        res.json(dbArticle)
     }).catch((err) => {
         res.json(err);
     })
 });
+
+//route to save articles
+app.get("/articles/saved", (req, res) => {
+    db.Article.findById({ saved: true }, (err, docs) => {
+        var obj = { articles: docs }
+        res.render("index", obj)
+    });
+});
+
+//route to save notes to articles
+app.get("/articles/:id", (req, res) => {
+    db.Article.findById({ _id: req.params.id }).populate("note")
+        .then((dbArticle) => {
+            res.json(dbArticle);
+        }).catch((err) => {
+            res.json(err)
+        });
+});
+
+app.post("/articles/:id", (req, res) => {
+    db.Article.findByIdAndUpdate({ _id: req.params.id }, { saved: req.body }, { new: true });
+})
+
+app.post("/articles/saved/:id", function (req, res) {
+    db.Note.create(req.body).then((dbNote) => {
+        res.json(dbNote);
+        return db.Article.findOneAndUpdate(
+            { _id: req.params.id },
+            { saved: saved },
+            { note: dbNote._id },
+            { new: true }
+        ).then((dbArticle) => {
+            res.json(dbArticle)
+        }).catch((err) => {
+            res.json(err);
+        })
+    })
+})
 
 
 app.listen(3000, () => {

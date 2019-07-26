@@ -13,8 +13,12 @@ var ArticleSchema = new Schema({
     description: {
         type: String
     },
-    image: {
+    author: {
         type: String
+    },
+    saved: {
+        type: Boolean,
+        default: false
     },
     //ref the Note.js file
     note: {
