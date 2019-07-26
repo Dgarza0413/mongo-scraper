@@ -37,7 +37,7 @@ $(function () {
         console.log(this)
         debugger;
         $.ajax({
-            method: "PUT",
+            method: "POST",
             url: "/articles/" + mongoId,
             data: {
                 title: $("#title-input").val(),
@@ -45,6 +45,7 @@ $(function () {
             }
         }).then(function (data) {
             console.log(data);
+            window.location.replace("/");
         });
 
         $("#title-input").val("");
