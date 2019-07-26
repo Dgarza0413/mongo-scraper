@@ -8,7 +8,7 @@
     <div class="card">
         <div class="card-info">
             {{#if saved}}
-            <i data-saved={{saved}} class="far fa-bookmark"></i>
+            <i data-saved={{saved}} data-id="{{id}}" class="bookmark far fa-bookmark"></i>
             {{/if}}
             <h5 class="card-category">{{author}}</h5>
             <h1 class="card-title">{{title}}</h1>
@@ -20,4 +20,27 @@
         </div>
     </div>
     {{/each}}
+</div>
+
+<div id="note-modal" style="display: none;" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2>Modal Header</h2>
+        </div>
+        <form action="">
+            <div class="modal-body">
+                <label for="title-input">Title</label>
+                <input id="title-input" type="text">
+
+                <label for="body-input">Body</label>
+                <textarea name="" id="body-input" cols="30" rows="10"></textarea>
+            </div>
+            <button id="submit-button">submit</button>
+        </form>
+        <div class=" modal-footer">
+            <h3>Modal Footer</h3>
+        </div>
+    </div>
+
 </div>

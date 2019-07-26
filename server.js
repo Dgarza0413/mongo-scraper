@@ -17,9 +17,9 @@ app.use(express.static("public"));
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-// var MONGODB_URI = process.env.MONGODB_URI || ("mongodb://localhost/mongo_scraper");
-// mongoose.connect(MONGODB_URI);
-mongoose.connect("mongodb://localhost/mongo_scraper", { useNewUrlParser: true });
+var MONGODB_URI = process.env.MONGODB_URI || ("mongodb://localhost/mongo_scraper");
+mongoose.connect(MONGODB_URI);
+// mongoose.connect("mongodb://localhost/mongo_scraper", { useNewUrlParser: true });
 
 app.get("/scrape", (req, res) => {
     axios.get("http://www.apnews.com/apf-topnews").then((response) => {
@@ -94,7 +94,7 @@ app.put("/articles/unsaved/:id", (req, res) => {
         })
 });
 
-app.post("/articles/saved/:id", function (req, res) {
+app.post("/articles/:id", function (req, res) {
     db.Note.create(req.body).then((dbNote) => {
         res.json(dbNote);
         return db.Article.findOneAndUpdate(
