@@ -15,6 +15,7 @@
             <h5 class="card-category">{{author}}</h5>
             <h1 class="card-title">{{title}}</h1>
             <p class="card-desc">{{description}}</p>
+            <p class="check-note" data-id="{{id}}">check for notes</p>
         </div>
         <a class="card-select" target="_blank" href="https://www.apnews.com{{link}}">Select</a>
         <div class="card-icon" data-id="{{id}}" data-saved="{{saved}}">
@@ -23,6 +24,8 @@
     </div>
     {{/each}}
 </div>
+
+<div id="#notes"></div>
 
 <div id="note-modal" style="display: none;" class="modal">
     <div class="modal-content">
