@@ -21,7 +21,7 @@ app.set("view engine", "handlebars");
 // mongoose.connect(MONGODB_URI);
 mongoose.connect("mongodb://localhost/mongo_scraper", { useNewUrlParser: true });
 
-app.get("/scrap", (req, res) => {
+app.get("/scrape", (req, res) => {
     axios.get("http://www.apnews.com/apf-topnews").then((response) => {
         var $ = cheerio.load(response.data);
         $(".FeedCard").each(function (i, element) {
@@ -42,12 +42,12 @@ app.get("/scrap", (req, res) => {
                 console.log(err);
             })
         });
-        res.send("scrap complete");
+        res.redirect("/");
     })
 })
 
 app.get("/", (req, res) => {
-    db.Article.find({}, function (err, docs) {
+    db.Article.find({}, (err, docs) => {
         //we have to pass in the obj that 
         var obj = { articles: docs }
         res.render("index", obj);
@@ -58,7 +58,7 @@ app.get("/", (req, res) => {
 
 //route to save articles
 app.get("/articles/saved", (req, res) => {
-    db.Article.findById({ saved: true }, (err, docs) => {
+    db.Article.find({ saved: true }, (err, docs) => {
         var obj = { articles: docs }
         res.render("index", obj)
     });
@@ -74,16 +74,31 @@ app.get("/articles/:id", (req, res) => {
         });
 });
 
-app.post("/articles/:id", (req, res) => {
-    db.Article.findByIdAndUpdate({ _id: req.params.id }, { saved: req.body }, { new: true });
-})
+app.put("/articles/saved/:id", (req, res) => {
+    db.Article.findOneAndUpdate(
+        { _id: req.params.id },
+        { saved: true }).then((dbArticle) => {
+            res.json(dbArticle);
+        }).catch((err) => {
+            res.json(err);
+        })
+});
+
+app.put("/articles/unsaved/:id", (req, res) => {
+    db.Article.findByIdAndUpdate(
+        { _id: req.params.id },
+        { saved: false }).then((dbArticle) => {
+            res.json(dbArticle);
+        }).catch((err) => {
+            res.json(err);
+        })
+});
 
 app.post("/articles/saved/:id", function (req, res) {
     db.Note.create(req.body).then((dbNote) => {
         res.json(dbNote);
         return db.Article.findOneAndUpdate(
             { _id: req.params.id },
-            { saved: saved },
             { note: dbNote._id },
             { new: true }
         ).then((dbArticle) => {
@@ -91,6 +106,21 @@ app.post("/articles/saved/:id", function (req, res) {
         }).catch((err) => {
             res.json(err);
         })
+    })
+})
+
+app.get("/drop", (req, res) => {
+    db.Article.find({}, (err, docs) => {
+        res.json(docs)
+    }).catch((err) => {
+        res.json(err);
+    })
+});
+
+app.delete("/drop", function (req, res) {
+    db.Article.deleteMany({}, function (err, result) {
+        if (err) throw err;
+        res.redirect("/");
     })
 })
 

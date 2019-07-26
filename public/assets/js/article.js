@@ -1,49 +1,24 @@
 console.log("connection made");
 $(function () {
-    // $("i.save-item").on("click", function () {
-    $(".card-icon").on("click", function () {
-        console.log($(this).attr("data-id"));
+    $(document).on("click", ".card-icon", function () {
         var mongoId = $(this).attr("data-id");
-        var icon = $(this).find("i")
+        var saved = $(this).attr("data-saved")
 
-        // $.ajax({
-        //     method: "GET",
-        //     url: "/articles/" + mongoId
-        // })
-        // .then(function (data) {
-        //     console.log(data)
-        // })
-        if (icon.attr("data-saved") === "false") {
-            console.log("saved value is false")
-            icon.attr("data-saved", "true")
-
-            // $(this).removeClass("fas fa-heart")
-            // $(this).addClass("far fa-heart")
+        if (saved === "false") {
             $.ajax({
-                method: "POST",
-                url: "/articles/" + mongoId,
-                data: { saved: false }
-            }).then(function (data) {
+                method: "PUT",
+                url: "/articles/saved/" + mongoId,
+            }).then((data) => {
                 console.log(data);
             })
-        } else if (icon.attr("data-saved") === "true") {
-            console.log("saved value is true")
-            // $(this).removeClass("far fa-heart")
-            // $(this).addClass("fas fa-heart")
-            // icon.attr("data-saved", "false")
-
-            console.log("this is the newsave data " + icon.attr("data-saved"))
-            var newSave = $(this).data("newSave");
-
+        }
+        if (saved === "true") {
             $.ajax({
-                method: "POST",
-                url: "/articles/" + mongoId,
-                data: { saved: true }
-            }).then(function (data) {
+                method: "PUT",
+                url: "/articles/unsaved/" + mongoId,
+            }).then((data) => {
                 console.log(data);
             })
         }
     })
 });
-
-    // $.ajax("/articles/")

@@ -1,17 +1,23 @@
+<a href="/">home</a>
+<a href="/articles/saved">saved articles</a>
+<a href="/scrape">scrape info</a>
+<a href="/drop">clear All</a>
+
 <div class="card-container">
     {{#each articles}}
-    {{!-- {{#unless saved}} --}}
     <div class="card">
         <div class="card-info">
+            {{#if saved}}
+            <i data-saved={{saved}} class="far fa-bookmark"></i>
+            {{/if}}
             <h5 class="card-category">{{author}}</h5>
             <h1 class="card-title">{{title}}</h1>
             <p class="card-desc">{{description}}</p>
         </div>
         <a class="card-select" target="_blank" href="https://www.apnews.com{{link}}">Select</a>
-        <div class="card-icon" data-id="{{id}}">
+        <div class="card-icon" data-id="{{id}}" data-saved="{{saved}}">
             {{> article/saved saved=false}}
         </div>
     </div>
-    {{!-- {{#unless saved}} --}}
     {{/each}}
 </div>
